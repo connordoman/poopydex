@@ -1,4 +1,4 @@
-import { PkmnResult } from "@/lib/types/pkmn";
+import { PkmnResult } from "@/lib/pkmn.types";
 import Link from "next/link";
 
 export default async function Page() {
