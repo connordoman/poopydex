@@ -79,4 +79,12 @@ body {
     .crisp-edges {
         image-rendering: crisp-edges;
     }
+
+    .list-hyphen {
+        @apply px-4;
+    }
+
+    .list-hyphen::before {
+        content: "\u";
+    }
 }

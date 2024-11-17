@@ -1,3 +1,4 @@
+import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
 import { AtLeast, Evolution, Move, PkmnName } from "@/lib/pkmn.types";
@@ -41,22 +42,24 @@ export default async function Page({ params }: { params: Promise<{ name: string 
                     return undefined;
                 }
 
-                return next_evo.map((ev: Evolution) => evo(ev)).join(", or ");
+                return next_evo.map((ev: Evolution) => evo(ev)).join("|");
             } else if (next_evo.evolves_to === null || next_evo.evolves_to === undefined) {
                 return next_evo.species?.name ?? "???";
             }
 
             const then = evo(next_evo.evolves_to);
 
-            return `${next_evo.species?.name}${then ? `, then ${then}` : ""}`;
+            return `${next_evo.species?.name}${then ? `,${then}` : ""}`;
         };
 
         if (!chain.evolves_to) {
             return chain.species?.name ?? "???";
         }
 
-        return `${chain.species?.name ?? "???"}, then ${evo(chain.evolves_to)}`;
+        return `${chain.species?.name ?? "???"},${evo(chain.evolves_to)}`;
     };
+
+    const evolutions = evolutionChain(chain).split(",");
 
     const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en").name;
 
@@ -79,7 +82,29 @@ export default async function Page({ params }: { params: Promise<{ name: string 
                 <PkmnTypeChip kind={type1} />
                 {type2 ? <PkmnTypeChip kind={type2} /> : null}
             </div>
-            <p>{evolutionChain(chain)}</p>
+            <div className="flex flex-row gap-1">
+                {evolutions.map((ev, i) => {
+                    if (ev.indexOf("|") > -1) {
+                        return (
+                            <div key={`${ev}_option_${i}`}>
+                                {ev.split("|").map((or, j) => (
+                                    <span key={or + "_ev_" + j}>
+                                        {j > 0 ? ", or " : "then "}
+                                        <PkmnLink pkmnName={or} />
+                                    </span>
+                                ))}
+                            </div>
+                        );
+                    }
+                    return (
+                        <span key={`${ev}_evo_${i}`}>
+                            {i > 0 ? " then " : null}
+                            <PkmnLink pkmnName={ev} />
+                            {i < evolutions.length - 1 ? "," : ""}
+                        </span>
+                    );
+                })}
+            </div>
             <Stats data={stats} />
             <div className="mt-4d">
                 <h3 className="font-semibold text-xl text-center">Moves</h3>
