@@ -27,3 +27,32 @@ export interface Move {
     };
     version_group_details: [];
 }
+
+export type PkmnType =
+    | "normal"
+    | "fighting"
+    | "flying"
+    | "poison"
+    | "ground"
+    | "rock"
+    | "bug"
+    | "ghost"
+    | "steel"
+    | "fire"
+    | "water"
+    | "grass"
+    | "electric"
+    | "psychic"
+    | "ice"
+    | "dragon"
+    | "dark"
+    | "fairy"
+    | "stellar"
+    | "unknown";
+
+export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+
+export type Evolution = {
+    evolves_to?: Evolution | Evolution[] | null;
+    species?: PkmnName | null;
+};

@@ -3,8 +3,9 @@
 import { Stat, StatName } from "@/lib/pkmn.types";
 import { ChartConfig, ChartContainer } from "../ui/chart";
 import { Bar, BarChart, CartesianGrid, LabelList, Tooltip, XAxis, YAxis } from "recharts";
-import { statArrayToChartable, statNameToAbbreviation } from "@/lib/pkmn.utils";
+import { statArrayToChartable } from "@/lib/pkmn.utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import DiagonalTick from "./DiagonalTick";
 
 export const StatList: StatName[] = ["hp", "attack", "defense", "special attack", "special defense", "speed"];
 
@@ -43,7 +44,7 @@ export default function Stats({ data }: StatsProps) {
     const chartedData = statArrayToChartable(data);
 
     return (
-        <Card className="w-full max-w-5xl">
+        <Card className="w-full max-w-md">
             <CardHeader>
                 <CardTitle>Stats</CardTitle>
             </CardHeader>
@@ -53,13 +54,15 @@ export default function Stats({ data }: StatsProps) {
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="name"
-                            tick={{ fontSize: 12 }}
+                            domain={["auto", "auto"]}
+                            tick={<DiagonalTick />}
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
-                            tickFormatter={(value) => statNameToAbbreviation(value).toUpperCase()}
+                            height={48}
+                            tickCount={chartedData.length}
                         />
-                        <YAxis max={255} />
+                        <YAxis domain={[0, 255]} tickCount={8} width={24} />
                         <Tooltip wrapperClassName="rounded-lg" />
                         <Bar dataKey="base" fill="#3366ff" radius={4}>
                             <LabelList dataKey="base" position="top" style={{ fill: "#000" }} />
