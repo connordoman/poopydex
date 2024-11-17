@@ -1,3 +1,4 @@
+import PkmnLink from "@/components/pkmn/PkmnLink";
 import { PkmnResult } from "@/lib/pkmn.types";
 import Link from "next/link";
 
@@ -18,7 +19,7 @@ export default async function Page() {
             <ol className="mx-auto flex flex-col items-start mt-4 list-decimal pl-8">
                 {pkmnNames.map((n: string) => (
                     <li key={n}>
-                        <Link href={`/pkmn/${n}`}>{n}</Link>
+                        <PkmnLink pkmnName={n} />
                     </li>
                 ))}
             </ol>
