@@ -1,6 +1,5 @@
-import PkmnLink from "@/components/pkmn/PkmnLink";
+import PkmnList from "@/components/pkmn/PkmnList";
 import { PkmnResult } from "@/lib/pkmn.types";
-import Link from "next/link";
 
 export default async function Page() {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/?limit=10000offset=0`);
@@ -11,18 +10,10 @@ export default async function Page() {
 
     const { results } = await res.json();
 
-    const pkmnNames = results.map((r: PkmnResult) => r.name);
-
     return (
-        <div className="px-3">
-            <h1 className="text-xl font-bold mt-4">PKMN</h1>
-            <ol className="mx-auto flex flex-col items-start mt-4 list-decimal pl-8">
-                {pkmnNames.map((n: string) => (
-                    <li key={n}>
-                        <PkmnLink pkmnName={n} />
-                    </li>
-                ))}
-            </ol>
+        <div className="px-3 w-max">
+            <h1 className="text-xl font-bold mt-4 w-max mx-auto mb-3">PKMN</h1>
+            <PkmnList items={results.map((r: PkmnResult, i: number) => ({ name: r, id: i + 1 }))} />
         </div>
     );
 }

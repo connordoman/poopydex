@@ -1,17 +1,7 @@
-import Link from "next/link";
-
 export default function Home() {
     return (
-        <main className="px-3 py-4">
-            <h1 className="text-2xl font-bold">Poopydex</h1>
-            <ul className="list-disc pl-4">
-                <li>
-                    <Link href="/pkmn">Pkmn List</Link>
-                </li>
-                <li>
-                    <Link href="/pkmn">Types List</Link>
-                </li>
-            </ul>
+        <main className="w-full flex flex-col items-center justify-center h-[calc(100svh-4rem)] text-zinc-400">
+            Click on the links above.
         </main>
     );
 }

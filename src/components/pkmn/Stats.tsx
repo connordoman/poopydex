@@ -61,6 +61,7 @@ export default function Stats({ data }: StatsProps) {
                             axisLine={false}
                             height={48}
                             tickCount={chartedData.length}
+                            minTickGap={0}
                         />
                         <YAxis domain={[0, 255]} tickCount={8} width={24} />
                         <Tooltip wrapperClassName="rounded-lg" />
