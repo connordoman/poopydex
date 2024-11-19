@@ -1,5 +1,5 @@
 {
-    "extends": ["next/core-web-vitals", "next/typescript"],
+    "extends": ["next/core-web-vitals", "next/typescript", "plugin:@tanstack/query/recommended"],
     "rules": {
         "no-underscore-dangle": "off",
         "no-unused-vars": "off",

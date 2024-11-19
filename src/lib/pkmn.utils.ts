@@ -16,6 +16,8 @@ export function statArrayToChartable(stats: Stat[]): ChartableStat[] {
 export function statNameToAbbreviation(stat: StatName): string {
     const statName = stat.toLowerCase();
 
+    console.log("simplifying stat:", statName);
+
     switch (statName) {
         case "hp":
             return "hp";
