@@ -63,15 +63,6 @@ export default function Stats({ data }: StatsProps) {
                             interval={0}
                         />
                         <YAxis domain={[0, 255]} tickCount={8} width={24} />
-                        {/* <Tooltip
-                            wrapperClassName="rounded-lg border-zinc-800 content-center"
-                            contentStyle={{
-                                backgroundColor: "hsl(var(--background))",
-                                border: "1px solid light-dark(#ccc, #333)",
-                                alignContent: "center",
-                            }}
-                            itemStyle={{ textTransform: "uppercase", fontSize: "0.67rem" }}
-                        /> */}
                         <Bar dataKey="base" fill="#3366ff" radius={4}>
                             <LabelList dataKey="base" position="top" style={{ fill: "light-dark(#333, #eee" }} />
                         </Bar>
