@@ -5,10 +5,37 @@ import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
 import { Evolution, Move, PkmnName } from "@/lib/pkmn.types";
 import { getSpriteURL, movesListByVersion } from "@/lib/pkmn.utils";
+import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
 import React from "react";
 
-export default async function Page({ params }: { params: Promise<{ name: string }> }) {
+interface PkmnPageProps {
+    params: Promise<{ name: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata(
+    { params, searchParams }: PkmnPageProps,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    // read route params
+    const name = (await params).name;
+
+    // fetch species data
+    const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
+    if (!speciesRes.ok) {
+        throw new Error(`Error fetching species data for: ${name}`);
+    }
+
+    const { names } = await speciesRes.json();
+    const displayName = names.find((dn: PkmnName) => dn.language.name === "en").name;
+
+    return {
+        title: displayName,
+    };
+}
+
+export default async function Page({ params }: PkmnPageProps) {
     const name = (await params).name;
 
     // fetch base data

@@ -18,7 +18,10 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-    title: "Poopydex",
+    title: {
+        template: "%s \u2013 Poopydex",
+        absolute: "Poopydex",
+    },
     description: "Thanks PokeAPI for helping to create this Poopydex.",
 };
 
