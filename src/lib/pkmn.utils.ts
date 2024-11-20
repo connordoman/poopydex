@@ -1,14 +1,20 @@
-import { ChartableStat, PkmnType, Stat, StatName } from "./pkmn.types";
+import {
+    ChartableStat,
+    Move,
+    MoveAtLevel,
+    MovesByVersion,
+    PkmnMoveMethod,
+    PkmnType,
+    PkmnVersion,
+    Stat,
+    StatName,
+} from "./pkmn.types";
 
 export function statArrayToChartable(stats: Stat[]): ChartableStat[] {
-    console.log({ stats });
-
     const chartable = stats.map(({ base_stat, stat }) => ({
         name: stat.name.replace("-", " ").toUpperCase(),
         base: base_stat,
     }));
-
-    console.log({ chartable });
 
     return chartable;
 }
@@ -131,5 +137,120 @@ export function typeNameToColor(type: PkmnType): { border: string; background: s
         case "unknown":
         default:
             return { border: "", background: "#10b981", text: "" };
+    }
+}
+
+export function versionNameToDisplay(version: PkmnVersion | string): string {
+    switch (version) {
+        case "red-blue":
+            return "Red & Blue";
+        case "yellow":
+            return "Yellow";
+        case "gold-silver":
+            return "Gold & Silver";
+        case "crystal":
+            return "Crystal";
+        case "ruby-sapphire":
+            return "Ruby & Sapphire";
+        case "emerald":
+            return "Emerald";
+        case "firered-leafgreen":
+            return "Firered & Leafgreen";
+        case "diamond-pearl":
+            return "Diamond & Pearl";
+        case "platinum":
+            return "Platinum";
+        case "heartgold-soulsilver":
+            return "Heartgold & Soulsilver";
+        case "black-white":
+            return "Black & White";
+        case "colosseum":
+            return "Colosseum";
+        case "xd":
+            return "XD: Gale of Darkness";
+        case "black-2-white-2":
+            return "Black 2 & White 2";
+        case "x-y":
+            return "X & Y";
+        case "omega-ruby-alpha-sapphire":
+            return "Omega Ruby & Alpha Sapphire";
+        case "sun-moon":
+            return "Sun & Moon";
+        case "ultra-sun-ultra-moon":
+            return "Ultra Sun & Ultra Moon";
+        case "lets-go-pikachu-lets-go-eevee":
+            return "Let's Go Pikachu & Let's Go Eevee";
+        case "sword-shield":
+            return "Sword & Shield";
+        case "the-isle-of-armor":
+            return "SWSH: The Isle of Armor";
+        case "the-crown-tundra":
+            return "SWSH: The Crown Tundra";
+        case "brilliant-diamond-and-shining-pearl":
+            return "Brilliand Diamond & Shining Pearl";
+        case "legends-arceus":
+            return "Legends Arceus";
+        case "scarlet-violet":
+            return "Scarlet & Violet";
+        case "the-teal-mask":
+            return "SV: The Teal Mask";
+        case "the-indigo-disk":
+            return "SV: The Indigo Disk";
+        default:
+            return "Unknown Version";
+    }
+}
+
+export function movesListByVersion(moves: Move[]): MovesByVersion {
+    const versionsSet: MovesByVersion = {};
+
+    for (const move of moves) {
+        for (const versionGroupDetails of move.version_group_details) {
+            const versionName: string = versionGroupDetails.version_group.name;
+
+            const moveSet = versionsSet[versionName] ?? [];
+
+            const moveData: MoveAtLevel = {
+                move: move.move,
+                level: versionGroupDetails.level_learned_at,
+                method: versionGroupDetails.move_learn_method,
+            };
+
+            moveSet.push(moveData);
+
+            versionsSet[versionName] = moveSet;
+        }
+    }
+    return versionsSet;
+}
+
+export function formatName(name: string): string {
+    return name.replaceAll("-", " ").toUpperCase();
+}
+
+export function moveMethodToDisplay(method: PkmnMoveMethod) {
+    switch (method) {
+        case "level-up":
+            return "Level Up";
+        case "egg":
+            return "Egg";
+        case "tutor":
+            return "Tutor";
+        case "machine":
+            return "TM/HM";
+        case "stadium-surfing-pikachu":
+            return "Surfing Pikachu";
+        case "light-ball-egg":
+            return "Light Ball Egg";
+        case "colosseum-purification":
+            return "Colosseum Purification";
+        case "xd-shadow":
+            return "XD Shadow Move";
+        case "xd-purification":
+            return "XD Purification";
+        case "form-change":
+            return "Form Change";
+        case "zygarde-cube":
+            return "Zygarde Cube";
     }
 }

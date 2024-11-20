@@ -1,4 +1,4 @@
-export type PkmnResult = { name: string; url: string };
+export type NamedResource = { name: string; url: string };
 
 export type Language = { name: string };
 
@@ -21,11 +21,20 @@ export interface ChartableStat {
 }
 
 export interface Move {
-    move: {
-        name: string;
-        url: string;
-    };
-    version_group_details: [];
+    move: NamedResource;
+    version_group_details: VersionGroupDetails[];
+}
+
+export interface VersionGroupDetails {
+    level_learned_at: number;
+    move_learn_method: NamedResource;
+    version_group: NamedResource;
+}
+
+export interface MoveAtLevel {
+    move: NamedResource;
+    level: number;
+    method: NamedResource;
 }
 
 export type PkmnType =
@@ -50,9 +59,51 @@ export type PkmnType =
     | "stellar"
     | "unknown";
 
-export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+export type PkmnVersion =
+    | "red-blue"
+    | "yellow"
+    | "gold-silver"
+    | "crystal"
+    | "ruby-sapphire"
+    | "emerald"
+    | "firered-leafgreen"
+    | "diamond-pearl"
+    | "platinum"
+    | "heartgold-soulsilver"
+    | "black-white"
+    | "colosseum"
+    | "xd"
+    | "black-2-white-2"
+    | "x-y"
+    | "omega-ruby-alpha-sapphire"
+    | "sun-moon"
+    | "ultra-sun-ultra-moon"
+    | "lets-go-pikachu-lets-go-eevee"
+    | "sword-shield"
+    | "the-isle-of-armor"
+    | "the-crown-tundra"
+    | "brilliant-diamond-and-shining-pearl"
+    | "legends-arceus"
+    | "scarlet-violet"
+    | "the-teal-mask"
+    | "the-indigo-disk";
+
+export type PkmnMoveMethod =
+    | "level-up"
+    | "egg"
+    | "tutor"
+    | "machine"
+    | "stadium-surfing-pikachu"
+    | "light-ball-egg"
+    | "colosseum-purification"
+    | "xd-shadow"
+    | "xd-purification"
+    | "form-change"
+    | "zygarde-cube";
 
 export type Evolution = {
     evolves_to?: Evolution | Evolution[] | null;
     species?: PkmnName | null;
 };
+
+export type MovesByVersion = Record<string, MoveAtLevel[]>;

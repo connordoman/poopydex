@@ -1,8 +1,9 @@
+import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
-import { AtLeast, Evolution, Move, PkmnName } from "@/lib/pkmn.types";
-import { getSpriteURL } from "@/lib/pkmn.utils";
+import { Evolution, Move, PkmnName } from "@/lib/pkmn.types";
+import { getSpriteURL, movesListByVersion } from "@/lib/pkmn.utils";
 import Image from "next/image";
 import React from "react";
 
@@ -11,7 +12,8 @@ export default async function Page({ params }: { params: Promise<{ name: string 
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
     if (!res.ok) {
-        return <div>Error fetching pokemon: {name}</div>;
+        // return <div>Error fetching pokemon: {name}</div>;
+        throw new Error(`Error fetching pokemon: ${name}`);
     }
 
     const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
@@ -21,8 +23,6 @@ export default async function Page({ params }: { params: Promise<{ name: string 
 
     // const { names: displayNames } = await speciesRes.json();
     const species = await speciesRes.json();
-
-    console.log({ species });
 
     const {
         names: displayNames,
@@ -52,7 +52,7 @@ export default async function Page({ params }: { params: Promise<{ name: string 
             return `${next_evo.species?.name}${then ? `,${then}` : ""}`;
         };
 
-        if (!chain.evolves_to) {
+        if (!chain.evolves_to || (Array.isArray(chain.evolves_to) && chain.evolves_to.length === 0)) {
             return chain.species?.name ?? "???";
         }
 
@@ -75,9 +75,11 @@ export default async function Page({ params }: { params: Promise<{ name: string 
     const spriteURL = getSpriteURL(id);
 
     return (
-        <div className="flex flex-col items-center gap-6 px-3">
-            <Image src={spriteURL} alt={`Image of ${name}`} width={192} height={192} className="pixelated mt-4" />
-            <h1 className="font-bold text-2xl mt-4">{displayName}</h1>
+        <div className="flex flex-col items-center gap-6 px-3 pb-4">
+            <div className="text-center">
+                <Image src={spriteURL} alt={`Image of ${name}`} width={128} height={128} className="pixelated mt-2" />
+                <h1 className="font-bold text-2xl mt-4">{displayName}</h1>
+            </div>
             <div className="flex flex-row gap-2">
                 <PkmnTypeChip kind={type1} />
                 {type2 ? <PkmnTypeChip kind={type2} /> : null}
@@ -106,15 +108,17 @@ export default async function Page({ params }: { params: Promise<{ name: string 
                 })}
             </div>
             <Stats data={stats} />
-            <div className="mt-4d">
-                <h3 className="font-semibold text-xl text-center">Moves</h3>
-                <ul className="flex flex-col gap-2 items-start w-full max-w-md">
+            <div className="w-full">
+                <h3 className="font-semibold text-xl text-center mb-2">Moves</h3>
+                <MovesList moves={movesListByVersion(moves)} />
+                {/* <hr className="mt-4" />
+                <ul className="flex flex-col gap-2 items-start w-full max-w-md mt-2">
                     {moveNames.map((m: string, i: number) => (
                         <li key={m}>
                             {i + 1}. {m}
                         </li>
                     ))}
-                </ul>
+                </ul> */}
             </div>
         </div>
     );
