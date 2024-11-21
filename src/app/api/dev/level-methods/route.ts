@@ -1,4 +1,4 @@
-import { NamedResource } from "@/lib/pkmn.types";
+import { NamedResource } from "@/lib/pkmn/pkmn.types";
 
 export async function GET() {
     const res = await fetch(`https://pokeapi.co/api/v2/move-learn-method/?limit=1000`);

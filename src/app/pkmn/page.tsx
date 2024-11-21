@@ -1,5 +1,5 @@
 import PkmnList from "@/components/pkmn/PkmnList";
-import { NamedResource } from "@/lib/pkmn.types";
+import { NamedResource } from "@/lib/pkmn/pkmn.types";
 
 export default async function Page() {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=2000`);

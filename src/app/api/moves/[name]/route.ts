@@ -1,5 +1,5 @@
-import { Move, MoveAtLevel, MovesByVersion, NamedResource, PkmnVersion } from "@/lib/pkmn.types";
-import { movesListByVersion } from "@/lib/pkmn.utils";
+import { Move, MoveAtLevel, MovesByVersion, NamedResource, PkmnVersion } from "@/lib/pkmn/pkmn.types";
+import { movesListByVersion } from "@/lib/pkmn/pkmn.utils";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ name: string }> }) {

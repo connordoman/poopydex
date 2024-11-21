@@ -1,12 +1,12 @@
 "use client";
 
-import { PkmnName } from "@/lib/pkmn.types";
+import { PkmnName } from "@/lib/pkmn/pkmn.types";
 import React, { useState } from "react";
 import PkmnLink from "./PkmnLink";
 import { Input } from "../ui/input";
 import { DataTable, SortableHeader } from "../ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { formatName } from "@/lib/pkmn.utils";
+import { formatName } from "@/lib/pkmn/pkmn.utils";
 
 export const pkmnColumns: ColumnDef<{
     name: PkmnName;

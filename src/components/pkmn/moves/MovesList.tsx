@@ -2,9 +2,9 @@
 
 import { DataTable } from "@/components/ui/data-table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { VERSION_NAMES } from "@/lib/pkmn.consts";
-import { MovesByVersion, PkmnMoveMethod, PkmnVersion } from "@/lib/pkmn.types";
-import { formatName, moveMethodToDisplay, versionNameToDisplay } from "@/lib/pkmn.utils";
+import { VERSION_NAMES } from "@/lib/pkmn/pkmn.consts";
+import { MovesByVersion, PkmnMoveMethod, PkmnVersion } from "@/lib/pkmn/pkmn.types";
+import { formatName, moveMethodToDisplay, versionNameToDisplay } from "@/lib/pkmn/pkmn.utils";
 import { sortByOrder } from "@/lib/utils";
 import { useState } from "react";
 import { moveRowColumns } from "./MovesColumns";
