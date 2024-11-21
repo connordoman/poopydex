@@ -39,6 +39,7 @@ export default function EvolutionList({ chain }: EvolutionListProps) {
     };
 
     const evolutions = evolutionChain(chain).split(",");
+
     return (
         <div className=" gap-1 justify-center">
             {evolutions.map((ev, i) => {
@@ -56,6 +57,7 @@ export default function EvolutionList({ chain }: EvolutionListProps) {
                 }
                 return (
                     <span key={`${ev}_evo_${i}`}>
+                        {evolutions.length === 1 ? "just " : null}
                         {i > 0 ? " then " : null}
                         <PkmnLink pkmnName={ev} />
                         {i < evolutions.length - 1 ? "," : ""}

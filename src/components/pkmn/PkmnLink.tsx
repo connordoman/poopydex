@@ -10,7 +10,7 @@ interface PkmnLinkProps {
 
 export default function PkmnLink({ pkmnName, caps = false }: PkmnLinkProps) {
     return (
-        <Link className="underline" href={`/pkmn/${pkmnName}`}>
+        <Link className="underline" href={`/pkmn/${pkmnName}`} prefetch>
             {caps ? formatName(pkmnName) : pkmnName}
         </Link>
     );
