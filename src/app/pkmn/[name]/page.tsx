@@ -4,6 +4,7 @@ import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
+import { EvolutionChain, EvolutionChainLink } from "@/lib/pkmn/evo/evolution.schema";
 import { Evolution, Move, NamedResource, PkmnName, PkmnType } from "@/lib/pkmn/pkmn.types";
 import { getSpriteURL, movesListByVersion } from "@/lib/pkmn/pkmn.utils";
 import { Metadata, ResolvingMetadata } from "next";
@@ -49,7 +50,7 @@ export default async function Page({ params }: PkmnPageProps) {
         throw new Error(`Error fetching evolution chain: ${name}`);
     }
 
-    const { chain } = await evoChainRes.json();
+    const { chain } = (await evoChainRes.json()) as EvolutionChain;
 
     // process data into useable forms
     const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en")?.name;
@@ -69,7 +70,7 @@ export default async function Page({ params }: PkmnPageProps) {
                 <PkmnTypeChip kind={type1 as PkmnType} />
                 {type2 ? <PkmnTypeChip kind={type2 as PkmnType} /> : null}
             </div>
-            <EvolutionList chain={chain} />
+            <EvolutionList chain={chain as EvolutionChainLink} />
             <Stats data={stats} />
             <MovesList moves={movesListByVersion(moves)} />
         </div>

@@ -1,15 +1,17 @@
 "use client";
 
-import { Evolution } from "@/lib/pkmn/pkmn.types";
+// import { Evolution } from "@/lib/pkmn/pkmn.types";
+import { EvolutionChain, EvolutionChainLink } from "@/lib/pkmn/evo/evolution.schema";
+
 import PkmnLink from "../PkmnLink";
 
 interface EvolutionListProps {
-    chain: Evolution;
+    chain: EvolutionChainLink;
 }
 
 export default function EvolutionList({ chain }: EvolutionListProps) {
-    const evolutionChain = (chain: Evolution): string => {
-        const evo = (next_evo: Evolution | Evolution[]): string | undefined => {
+    const evolutionChain = (chain: EvolutionChainLink): string => {
+        const evo = (next_evo: EvolutionChainLink | EvolutionChainLink[]): string | undefined => {
             // if the evolution is an array of optionals,
             // join them after recursively checking their downstream evolutions
             if (Array.isArray(next_evo)) {
@@ -18,7 +20,7 @@ export default function EvolutionList({ chain }: EvolutionListProps) {
                 }
 
                 // join the parallel evolution branches with an or-like separator
-                return next_evo.map((ev: Evolution) => evo(ev)).join("|");
+                return next_evo.map((ev: EvolutionChainLink) => evo(ev)).join("|");
             } else if (next_evo.evolves_to === null || next_evo.evolves_to === undefined) {
                 return next_evo.species?.name ?? "???";
             }
