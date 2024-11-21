@@ -1,11 +1,11 @@
 import { NamedResource } from "@/lib/pkmn/pkmn.types";
 
 export async function GET() {
-    const res = await fetch(`https://pokeapi.co/api/v2/evolution-trigger/other`);
+    const res = await fetch(`https://pokeapi.co/api/v2/nature/?limit=1000`);
 
-    const { pokemon_species } = await res.json();
+    const { results } = (await res.json()) as { results: NamedResource[] };
 
-    const names = pokemon_species.map((r: NamedResource) => `case "${r.name}": return;`);
+    const names = results.map((r: NamedResource) => `"${r.name}": { increase: "", decrease: "" },`);
 
     return new Response(names.join("\n"));
 }

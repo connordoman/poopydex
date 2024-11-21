@@ -43,9 +43,14 @@ export default function RootLayout({
                                         Pkmn List
                                     </Link>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link href="/type" className="underline">
                                         Type List
+                                    </Link>
+                                </li> */}
+                                <li>
+                                    <Link href="/natures" className="underline">
+                                        Natures
                                     </Link>
                                 </li>
                             </ul>
