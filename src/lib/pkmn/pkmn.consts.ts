@@ -1,4 +1,4 @@
-import { PkmnMoveMethod, PkmnType, PkmnVersion } from "./pkmn.types";
+import { EvolutionMethod, PkmnMoveMethod, PkmnType, PkmnVersion } from "./pkmn.types";
 
 export const TYPE_NAMES: PkmnType[] = [
     "normal",
@@ -65,4 +65,20 @@ export const MOVE_METHODS: PkmnMoveMethod[] = [
     "xd-purification",
     "form-change",
     "zygarde-cube",
+];
+
+export const EVOLUTION_METHODS: EvolutionMethod[] = [
+    "level-up",
+    "trade",
+    "use-item",
+    "shed",
+    "spin",
+    "tower-of-darkness",
+    "tower-of-waters",
+    "three-critical-hits",
+    "take-damage",
+    "other",
+    "agile-style-move",
+    "strong-style-move",
+    "recoil-damage",
 ];

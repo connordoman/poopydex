@@ -1,5 +1,8 @@
+import { EvolutionChain, EvolutionDetail } from "./evo/evolution.schema";
+import { NamedResource } from "./pkmn.schema";
 import {
     ChartableStat,
+    EvolutionMethod,
     Move,
     MoveAtLevel,
     MovesByVersion,
@@ -224,8 +227,8 @@ export function movesListByVersion(moves: Move[]): MovesByVersion {
     return versionsSet;
 }
 
-export function formatName(name: string): string {
-    return name.replaceAll("-", " ").toUpperCase();
+export function formatName(name: string | undefined, caps: boolean = false): string {
+    return (name ?? "???").replaceAll("-", " ").toUpperCase();
 }
 
 export function moveMethodToDisplay(method: PkmnMoveMethod) {
@@ -253,4 +256,136 @@ export function moveMethodToDisplay(method: PkmnMoveMethod) {
         case "zygarde-cube":
             return "Zygarde Cube";
     }
+}
+
+export function evolutionMethodToDisplay(detail: EvolutionDetail, pkmnName: string) {
+    switch (detail.trigger.name) {
+        case "level-up":
+            const reqs = [];
+
+            if (detail.gender) {
+                reqs.push(`as gender ${detail.gender}`);
+            }
+            if (detail.location) {
+                reqs.push(`at ${formatName(detail.location.name)}`);
+            }
+            if (detail.min_affection) {
+                reqs.push(`with ${detail.min_affection} affection`);
+            }
+            if (detail.min_beauty) {
+                reqs.push(`with ${detail.min_beauty} beauty`);
+            }
+            if (detail.min_happiness) {
+                reqs.push(`with ${detail.min_happiness} happiness`);
+            }
+            if (detail.needs_overworld_rain) {
+                reqs.push(`while raining`);
+            }
+            if (detail.party_species) {
+                reqs.push(`while party contains ${formatName(detail.party_species.name)}`);
+            }
+            if (detail.party_type) {
+                reqs.push(`with party type ${detail.party_type.name}`);
+            }
+            if (detail.relative_physical_stats) {
+                reqs.push(`with stats at ${detail.relative_physical_stats}`);
+            }
+            if (detail.time_of_day) {
+                reqs.push(`at ${detail.time_of_day}`);
+            }
+            if (detail.trade_species) {
+                reqs.push(`trade species ${detail.trade_species}`);
+            }
+            if (detail.turn_upside_down) {
+                reqs.push(`turn upside down`);
+            }
+            return `level ${detail.min_level ? detail.min_level : "up"} ${reqs.join(", ")}`;
+        case "trade":
+            return `trade holding ${formatName(detail.held_item?.name)}`;
+        case "use-item":
+            return `use ${formatName(detail.item?.name)}`;
+        case "shed":
+            return "sheds into";
+        case "spin":
+            return "spin into";
+        case "tower-of-darkness":
+        case "tower-of-waters":
+        case "three-critical-hits":
+            return formatName(detail.trigger.name);
+        case "take-damage":
+            return;
+        case "other":
+            switch (pkmnName) {
+                case "pawmot":
+                case "brambleghast":
+                case "rabsca":
+                    return "level up outside of its Pokê Ball after walking 1,000 steps using the Let's Go! feature";
+                case "maushold":
+                    return "level 25, 99% chance of being family of 4";
+                case "palafin":
+                    return "level 38 while in a Union Circle group";
+                case "annihilape":
+                    return "level up after using Rage Fist 20 times";
+                case "kingambit":
+                    return "level up after defeating 3 bisharp that hold a Leader's Crest";
+                case "gholdengo":
+                    return "level up with 999 Gimmighoul Coins in the Bag";
+            }
+        case "agile-style-move":
+        case "strong-style-move":
+            return `use ${formatName(detail.known_move?.name)} 20 times`;
+        case "recoil-damage":
+            return "take 294 recoil damage";
+        default:
+            return "";
+    }
+}
+
+export type EvolutionBreakdown = {
+    species: string;
+    techniques: string[] | undefined;
+    or?: boolean;
+};
+
+export function evolutionBreakdown(
+    evolutions: Record<string, EvolutionDetail[]>,
+    grouping: string = ""
+): EvolutionBreakdown[] {
+    const computed = [];
+
+    const orSet = new Set<string>();
+
+    console.log({ grouping });
+    const groupings = grouping.split(",").map((thenGroup) => {
+        const orGroup = thenGroup.split("|");
+        if (orGroup.length === 1) {
+            return thenGroup[0];
+        }
+
+        return orGroup;
+    });
+
+    for (const group of groupings) {
+        if (Array.isArray(group)) {
+            group.forEach((or) => {
+                orSet.add(or);
+            });
+        }
+    }
+
+    const entries = Object.entries(evolutions) as [string, EvolutionDetail[]][];
+
+    for (let i = 0; i < entries.length; i++) {
+        const [pkmn, details] = entries[i];
+
+        const val: EvolutionBreakdown = {
+            species: pkmn,
+            techniques: details.map((d) => evolutionMethodToDisplay(d, pkmn) ?? ""),
+            or: orSet.has(pkmn),
+        };
+
+        computed.push(val);
+    }
+
+    return computed;
 }

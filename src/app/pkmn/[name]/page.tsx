@@ -1,4 +1,4 @@
-import { fetchPkmnAndSpeciesData } from "@/app/actions";
+import { fetchEvolutionChain, fetchPkmnAndSpeciesData } from "@/app/actions";
 import EvolutionList from "@/components/pkmn/evo/EvolutionList";
 import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
@@ -60,6 +60,8 @@ export default async function Page({ params }: PkmnPageProps) {
 
     const spriteURL = getSpriteURL(id);
 
+    const { evolutions, grouping } = await fetchEvolutionChain(name);
+
     return (
         <div className="flex flex-col items-center gap-6 px-3 pb-4">
             <div className="text-center">
@@ -70,7 +72,7 @@ export default async function Page({ params }: PkmnPageProps) {
                 <PkmnTypeChip kind={type1 as PkmnType} />
                 {type2 ? <PkmnTypeChip kind={type2 as PkmnType} /> : null}
             </div>
-            <EvolutionList chain={chain as EvolutionChainLink} />
+            <EvolutionList evolutions={evolutions} grouping={grouping} />
             <Stats data={stats} />
             <MovesList moves={movesListByVersion(moves)} />
         </div>
