@@ -1,9 +1,10 @@
-import { fetchPkmnAndSpeciesData } from "@/app/actions";
+import { fetchEvolutionChain, fetchPkmnAndSpeciesData } from "@/app/actions";
 import EvolutionList from "@/components/pkmn/evo/EvolutionList";
 import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
+import { EvolutionChain, EvolutionChainLink } from "@/lib/pkmn/evo/evolution.schema";
 import { Evolution, Move, NamedResource, PkmnName, PkmnType } from "@/lib/pkmn/pkmn.types";
 import { getSpriteURL, movesListByVersion } from "@/lib/pkmn/pkmn.utils";
 import { Metadata, ResolvingMetadata } from "next";
@@ -49,7 +50,7 @@ export default async function Page({ params }: PkmnPageProps) {
         throw new Error(`Error fetching evolution chain: ${name}`);
     }
 
-    const { chain } = await evoChainRes.json();
+    const { chain } = (await evoChainRes.json()) as EvolutionChain;
 
     // process data into useable forms
     const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en")?.name;
@@ -58,6 +59,8 @@ export default async function Page({ params }: PkmnPageProps) {
     const type2 = types[1] ? types[1].type.name.replaceAll("-", " ") : undefined;
 
     const spriteURL = getSpriteURL(id);
+
+    const { evolutions, grouping } = await fetchEvolutionChain(name);
 
     return (
         <div className="flex flex-col items-center gap-6 px-3 pb-4">
@@ -69,7 +72,7 @@ export default async function Page({ params }: PkmnPageProps) {
                 <PkmnTypeChip kind={type1 as PkmnType} />
                 {type2 ? <PkmnTypeChip kind={type2 as PkmnType} /> : null}
             </div>
-            <EvolutionList chain={chain} />
+            <EvolutionList evolutions={evolutions} grouping={grouping} />
             <Stats data={stats} />
             <MovesList moves={movesListByVersion(moves)} />
         </div>

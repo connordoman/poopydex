@@ -60,7 +60,10 @@ interface PkmnListProps {
 export default function PkmnList({ items }: PkmnListProps) {
     const [search, setSearch] = useState<string>("");
 
-    const roster = search.trim() === "" ? items : items.filter(({ name }) => name.name.indexOf(search) > -1);
+    const roster =
+        search.trim() === ""
+            ? items
+            : items.filter(({ name }) => name.name.toLowerCase().indexOf(search.toLowerCase()) > -1);
 
     return (
         <div className="w-full max-w-xl flex flex-col gap-3">
