@@ -4,8 +4,8 @@ import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
-import { Evolution, Move, NamedResource, PkmnName } from "@/lib/pkmn.types";
-import { getSpriteURL, movesListByVersion } from "@/lib/pkmn.utils";
+import { Evolution, Move, NamedResource, PkmnName, PkmnType } from "@/lib/pkmn/pkmn.types";
+import { getSpriteURL, movesListByVersion } from "@/lib/pkmn/pkmn.utils";
 import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
 import React from "react";
@@ -24,7 +24,7 @@ export async function generateMetadata(
 
     const { species } = await fetchPkmnAndSpeciesData(name);
 
-    const displayName = species.names.find((dn: PkmnName) => dn.language.name === "en").name;
+    const displayName = species.names.find((dn: PkmnName) => dn.language.name === "en")?.name;
 
     return {
         title: displayName,
@@ -52,7 +52,7 @@ export default async function Page({ params }: PkmnPageProps) {
     const { chain } = await evoChainRes.json();
 
     // process data into useable forms
-    const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en").name;
+    const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en")?.name;
 
     const type1 = types[0].type.name.replaceAll("-", " ");
     const type2 = types[1] ? types[1].type.name.replaceAll("-", " ") : undefined;
@@ -66,8 +66,8 @@ export default async function Page({ params }: PkmnPageProps) {
                 <h1 className="font-bold text-2xl mt-4">{displayName}</h1>
             </div>
             <div className="flex flex-row gap-2">
-                <PkmnTypeChip kind={type1} />
-                {type2 ? <PkmnTypeChip kind={type2} /> : null}
+                <PkmnTypeChip kind={type1 as PkmnType} />
+                {type2 ? <PkmnTypeChip kind={type2 as PkmnType} /> : null}
             </div>
             <EvolutionList chain={chain} />
             <Stats data={stats} />

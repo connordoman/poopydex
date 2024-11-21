@@ -46,7 +46,7 @@ export function getSpriteURL(id: number, back: boolean = false, shiny: boolean =
     }${id}.png`;
 }
 
-export function typeNameToDisplay(type: PkmnType): string {
+export function typeNameToDisplay(type?: PkmnType): string {
     console.log("displaying", type);
 
     switch (type) {
@@ -94,7 +94,7 @@ export function typeNameToDisplay(type: PkmnType): string {
     }
 }
 
-export function typeNameToColor(type: PkmnType): { border: string; background: string; text: string } {
+export function typeNameToColor(type?: PkmnType): { border: string; background: string; text: string } {
     switch (type) {
         case "normal":
             return { border: "", background: "#a8a878", text: "" };

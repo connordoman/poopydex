@@ -1,5 +1,5 @@
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
-import { PkmnName, PkmnType } from "@/lib/pkmn.types";
+import { PkmnName, PkmnType } from "@/lib/pkmn/pkmn.types";
 
 export default async function TypesPage() {
     const res = await fetch(`https://pokeapi.co/api/v2/type/`);

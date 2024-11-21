@@ -1,11 +1,12 @@
 "use client";
 
-import { Stat, StatName } from "@/lib/pkmn.types";
+import { ChartableStat, Stat, StatName } from "@/lib/pkmn/pkmn.types";
 import { ChartConfig, ChartContainer } from "../ui/chart";
 import { Bar, BarChart, CartesianGrid, LabelList, Tooltip, XAxis, YAxis } from "recharts";
-import { statArrayToChartable } from "@/lib/pkmn.utils";
+import { statArrayToChartable } from "@/lib/pkmn/pkmn.utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import DiagonalTick from "./DiagonalTick";
+import { SVGProps } from "react";
 
 export const StatList: StatName[] = ["hp", "attack", "defense", "special attack", "special defense", "speed"];
 
@@ -47,18 +48,30 @@ const getPath = (x: number, y: number, width: number, height: number) =>
      H${x} 
      Z`;
 
-const RectangleBar = ({ fill, x, y, width, height, payload, ...props }: any) => {
-    const asNumber = Number(payload.base);
+interface RectangleBarProps<T> extends SVGProps<SVGRectElement> {
+    payload?: T;
+}
+
+const RectangleBar = ({ x, y, width, height, payload }: RectangleBarProps<ChartableStat>) => {
+    const asNumber = Number(payload?.base);
     console.log(JSON.stringify(payload, null, 2));
     if (isNaN(asNumber)) {
         throw new Error("Cannot render bar for chart: value is NaN");
     }
     const percent = (asNumber / 255) * 100;
 
+    // Use rect for rounded corners
     return (
-        <path
-            d={getPath(x, y, width, height)}
-            style={{ fill: `color-mix(in hsl, hsl(0 84 60), hsl(142 71 45) ${percent}%)` }}
+        <rect
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            rx={6} // Horizontal radius
+            ry={6} // Vertical radius
+            style={{
+                fill: `color-mix(in hsl, hsl(0 84 60), hsl(142 71 45) ${percent}%)`,
+            }}
             stroke="none"
         />
     );

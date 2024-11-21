@@ -1,6 +1,9 @@
 "use server";
 
-export async function fetchPkmnAndSpeciesData(name: string): Promise<{ pkmn: any; species: any }> {
+import { Pokemon } from "@/lib/pkmn/pkmn.schema";
+import { PokemonSpecies } from "@/lib/pkmn/species/species.schema";
+
+export async function fetchPkmnAndSpeciesData(name: string): Promise<{ pkmn: Pokemon; species: PokemonSpecies }> {
     // fetch base data
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
     if (!res.ok) {

@@ -1,4 +1,4 @@
-import { statNameToAbbreviation } from "@/lib/pkmn.utils";
+import { statNameToAbbreviation } from "@/lib/pkmn/pkmn.utils";
 import { SVGProps } from "react";
 import { TickItem } from "recharts/types/util/types";
 

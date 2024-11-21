@@ -1,6 +1,6 @@
 "use client";
 
-import { Evolution } from "@/lib/pkmn.types";
+import { Evolution } from "@/lib/pkmn/pkmn.types";
 import PkmnLink from "../PkmnLink";
 
 interface EvolutionListProps {

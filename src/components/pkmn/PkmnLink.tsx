@@ -1,6 +1,6 @@
 "use client";
 
-import { formatName } from "@/lib/pkmn.utils";
+import { formatName } from "@/lib/pkmn/pkmn.utils";
 import Link from "next/link";
 
 interface PkmnLinkProps {
