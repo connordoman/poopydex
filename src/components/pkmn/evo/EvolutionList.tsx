@@ -1,69 +1,50 @@
 "use client";
 
-import { Evolution } from "@/lib/pkmn/pkmn.types";
+// import { Evolution } from "@/lib/pkmn/pkmn.types";
+import { EvolutionChainLink, EvolutionDetail } from "@/lib/pkmn/evo/evolution.schema";
+
 import PkmnLink from "../PkmnLink";
+import { evolutionBreakdown } from "@/lib/pkmn/pkmn.utils";
+import React from "react";
+import { MoveRight } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EvolutionListProps {
-    chain: Evolution;
+    evolutions: Record<string, EvolutionDetail[]>;
+    grouping: string;
 }
 
-export default function EvolutionList({ chain }: EvolutionListProps) {
-    const evolutionChain = (chain: Evolution): string => {
-        const evo = (next_evo: Evolution | Evolution[]): string | undefined => {
-            // if the evolution is an array of optionals,
-            // join them after recursively checking their downstream evolutions
-            if (Array.isArray(next_evo)) {
-                if (next_evo.length === 0) {
-                    return undefined;
-                }
-
-                // join the parallel evolution branches with an or-like separator
-                return next_evo.map((ev: Evolution) => evo(ev)).join("|");
-            } else if (next_evo.evolves_to === null || next_evo.evolves_to === undefined) {
-                return next_evo.species?.name ?? "???";
-            }
-
-            // otherwise, join this chain into one string
-            const then = evo(next_evo.evolves_to);
-
-            return `${next_evo.species?.name}${then ? `,${then}` : ""}`;
-        };
-
-        // if top level evolution is an empty array or nothing, return only the species' name
-        if (!chain.evolves_to || (Array.isArray(chain.evolves_to) && chain.evolves_to.length === 0)) {
-            return chain.species?.name ?? "???";
-        }
-
-        // there must otherwise be an evolution, so recursively work through it
-        return `${chain.species?.name ?? "???"},${evo(chain.evolves_to)}`;
-    };
-
-    const evolutions = evolutionChain(chain).split(",");
+export default function EvolutionList({ evolutions, grouping }: EvolutionListProps) {
+    const evoBreakdown = evolutionBreakdown(evolutions, grouping);
 
     return (
-        <div className=" gap-1 justify-center">
-            {evolutions.map((ev, i) => {
-                if (ev.indexOf("|") > -1) {
-                    return (
-                        <span key={`${ev}_option_${i}`}>
-                            {ev.split("|").map((or, j) => (
-                                <span key={or + "_ev_" + j}>
-                                    {j > 0 ? " or " : " then "}
-                                    <PkmnLink pkmnName={or} />
+        <Card className="gap-1 justify-center w-full">
+            <CardHeader>
+                <CardTitle>Evolutions</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="flex flex-row items-start justify-center gap-2 flex-wrap leading-none">
+                    {evoBreakdown.map((ev, i) => {
+                        return (
+                            <React.Fragment key={"ev_" + i + "_" + ev.species}>
+                                <span className="inline-flex flex-col items-center pt-1 w-min">
+                                    <PkmnLink pkmnName={ev.species} />
+                                    {ev.techniques && ev.techniques.length > 0 ? (
+                                        <span className="text-xs text-center">
+                                            ({ev.techniques.join(", or ").trim()})
+                                        </span>
+                                    ) : null}
                                 </span>
-                            ))}
-                        </span>
-                    );
-                }
-                return (
-                    <span key={`${ev}_evo_${i}`}>
-                        {evolutions.length === 1 ? "just " : null}
-                        {i > 0 ? " then " : null}
-                        <PkmnLink pkmnName={ev} />
-                        {i < evolutions.length - 1 ? "," : ""}
-                    </span>
-                );
-            })}
-        </div>
+                                {i === evoBreakdown.length - 1 ? null : !ev.or ? (
+                                    <MoveRight className="h-7" size={16} />
+                                ) : (
+                                    <span className="pt-1"> or </span>
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
+                </p>
+            </CardContent>
+        </Card>
     );
 }

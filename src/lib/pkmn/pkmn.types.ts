@@ -101,6 +101,21 @@ export type PkmnMoveMethod =
     | "form-change"
     | "zygarde-cube";
 
+export type EvolutionMethod =
+    | "level-up"
+    | "trade"
+    | "use-item"
+    | "shed"
+    | "spin"
+    | "tower-of-darkness"
+    | "tower-of-waters"
+    | "three-critical-hits"
+    | "take-damage"
+    | "other"
+    | "agile-style-move"
+    | "strong-style-move"
+    | "recoil-damage";
+
 export type Evolution = {
     evolves_to?: Evolution | Evolution[] | null;
     species?: PkmnName | null;
