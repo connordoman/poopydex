@@ -1,9 +1,10 @@
+import { fetchPkmnAndSpeciesData } from "@/app/actions";
 import EvolutionList from "@/components/pkmn/evo/EvolutionList";
 import MovesList from "@/components/pkmn/moves/MovesList";
 import PkmnLink from "@/components/pkmn/PkmnLink";
 import Stats from "@/components/pkmn/Stats";
 import PkmnTypeChip from "@/components/pkmn/types/PkmnTypeChip";
-import { Evolution, Move, PkmnName } from "@/lib/pkmn.types";
+import { Evolution, Move, NamedResource, PkmnName } from "@/lib/pkmn.types";
 import { getSpriteURL, movesListByVersion } from "@/lib/pkmn.utils";
 import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
@@ -21,14 +22,9 @@ export async function generateMetadata(
     // read route params
     const name = (await params).name;
 
-    // fetch species data
-    const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
-    if (!speciesRes.ok) {
-        throw new Error(`Error fetching species data for: ${name}`);
-    }
+    const { species } = await fetchPkmnAndSpeciesData(name);
 
-    const { names } = await speciesRes.json();
-    const displayName = names.find((dn: PkmnName) => dn.language.name === "en").name;
+    const displayName = species.names.find((dn: PkmnName) => dn.language.name === "en").name;
 
     return {
         title: displayName,
@@ -38,19 +34,9 @@ export async function generateMetadata(
 export default async function Page({ params }: PkmnPageProps) {
     const name = (await params).name;
 
-    // fetch base data
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-    if (!res.ok) {
-        throw new Error(`Error fetching pokemon: ${name}`);
-    }
+    const { pkmn, species } = await fetchPkmnAndSpeciesData(name);
 
-    // fetch species data
-    const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
-    if (!speciesRes.ok) {
-        throw new Error(`Error fetching species data for: ${name}`);
-    }
-
-    const species = await speciesRes.json();
+    const { types, id, stats, moves } = pkmn;
 
     const {
         names: displayNames,
@@ -68,8 +54,6 @@ export default async function Page({ params }: PkmnPageProps) {
     // process data into useable forms
     const displayName = displayNames.find((dn: PkmnName) => dn.language.name === "en").name;
 
-    const { id, types, stats, moves } = await res.json();
-
     const type1 = types[0].type.name.replaceAll("-", " ");
     const type2 = types[1] ? types[1].type.name.replaceAll("-", " ") : undefined;
 
@@ -78,7 +62,7 @@ export default async function Page({ params }: PkmnPageProps) {
     return (
         <div className="flex flex-col items-center gap-6 px-3 pb-4">
             <div className="text-center">
-                <Image src={spriteURL} alt={`Image of ${name}`} width={128} height={128} className="pixelated mt-2" />
+                <Image src={spriteURL} alt={`Image of ${name}`} width={128} height={128} className="pixelated mt-4" />
                 <h1 className="font-bold text-2xl mt-4">{displayName}</h1>
             </div>
             <div className="flex flex-row gap-2">

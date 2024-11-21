@@ -2,13 +2,15 @@ import PkmnList from "@/components/pkmn/PkmnList";
 import { NamedResource } from "@/lib/pkmn.types";
 
 export default async function Page() {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/?limit=10000offset=0`);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/?limit=2000`);
 
     if (!res.ok) {
         return <div>Could not load data.</div>;
     }
 
     const { results } = await res.json();
+
+    console.log({ len: results.length });
 
     return (
         <div className="px-3 w-full max-w-sm mx-auto">

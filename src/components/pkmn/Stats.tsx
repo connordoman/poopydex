@@ -40,17 +40,41 @@ interface StatsProps {
     data: Stat[];
 }
 
+const getPath = (x: number, y: number, width: number, height: number) =>
+    `M${x},${y} 
+     H${x + width} 
+     V${y + height} 
+     H${x} 
+     Z`;
+
+const RectangleBar = ({ fill, x, y, width, height, payload, ...props }: any) => {
+    const asNumber = Number(payload.base);
+    console.log(JSON.stringify(payload, null, 2));
+    if (isNaN(asNumber)) {
+        throw new Error("Cannot render bar for chart: value is NaN");
+    }
+    const percent = (asNumber / 255) * 100;
+
+    return (
+        <path
+            d={getPath(x, y, width, height)}
+            style={{ fill: `color-mix(in hsl, hsl(0 84 60), hsl(142 71 45) ${percent}%)` }}
+            stroke="none"
+        />
+    );
+};
+
 export default function Stats({ data }: StatsProps) {
     const chartedData = statArrayToChartable(data);
 
     return (
         <Card className="w-full max-w-md">
             <CardHeader>
-                <CardTitle>Stats</CardTitle>
+                <CardTitle className="bg-zinc">Stats</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-                    <BarChart accessibilityLayer data={chartedData}>
+                    <BarChart accessibilityLayer data={chartedData} margin={{ left: 5, top: 20 }}>
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="name"
@@ -63,8 +87,12 @@ export default function Stats({ data }: StatsProps) {
                             interval={0}
                         />
                         <YAxis domain={[0, 255]} tickCount={8} width={24} />
-                        <Bar dataKey="base" fill="#3366ff" radius={4}>
-                            <LabelList dataKey="base" position="top" style={{ fill: "light-dark(#333, #eee" }} />
+                        <Bar shape={<RectangleBar />} dataKey="base" radius={4}>
+                            <LabelList
+                                dataKey="base"
+                                position="top"
+                                style={{ fill: "light-dark(#333, #eee", fontWeight: "bolder", zIndex: 20 }}
+                            />
                         </Bar>
                     </BarChart>
                 </ChartContainer>
